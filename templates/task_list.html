@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}All Tasks · Study Planner{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">All Tasks</h1>
+  <a href="{% url 'task_add' %}" class="btn btn-primary">+ Add Task</a>
+</div>
+
+<form method="get" class="card card-body shadow-sm mb-3">
+  <div class="row g-2 align-items-end">
+    <div class="col-12 col-md-4">
+      <label class="form-label small mb-1" for="q">Search title</label>
+      <input type="text" id="q" name="q" class="form-control" value="{{ filter_form.q.value|default_if_none:'' }}">
+    </div>
+    <div class="col-6 col-md-2">
+      <label class="form-label small mb-1" for="status">Status</label>
+      <select id="status" name="status" class="form-select">
+        {% for value, label in filter_form.status.field.choices %}
+          <option value="{{ value }}" {% if filter_form.status.value == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <label class="form-label small mb-1" for="priority">Priority</label>
+      <select id="priority" name="priority" class="form-select">
+        {% for value, label in filter_form.priority.field.choices %}
+          <option value="{{ value }}" {% if filter_form.priority.value == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-6 col-md-2">
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="overdue" name="overdue" value="on" {% if filter_form.overdue.value %}checked{% endif %}>
+        <label class="form-check-label" for="overdue">Overdue only</label>
+      </div>
+    </div>
+    <div class="col-6 col-md-2 d-flex gap-2">
+      <button type="submit" class="btn btn-outline-primary flex-fill">Filter</button>
+      <a href="{% url 'task_list' %}" class="btn btn-outline-secondary">Reset</a>
+    </div>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead class="table-light">
+        <tr><th>Title</th><th>Due</th><th>Priority</th><th>Status</th><th class="text-end">Actions</th></tr>
+      </thead>
+      <tbody>
+      {% for task in tasks %}
+        <tr class="task-row">
+          <td>
+            <div class="fw-semibold task-title">{{ task.title }}</div>
+            {% if task.description %}<div class="small text-muted task-description">{{ task.description|truncatechars:80 }}</div>{% endif %}
+          </td>
+          <td>
+            {{ task.due_date|date:"Y-m-d" }}
+            {% if task.is_overdue %}<span class="badge text-bg-danger ms-1">Overdue</span>{% endif %}
+          </td>
+          <td>
+            <span class="badge {% if task.priority == 'high' %}text-bg-danger{% elif task.priority == 'medium' %}text-bg-warning{% else %}text-bg-secondary{% endif %}">{{ task.get_priority_display }}</span>
+          </td>
+          <td>
+            <span class="badge {% if task.is_completed %}text-bg-success{% else %}text-bg-info{% endif %}">{{ task.get_status_display }}</span>
+          </td>
+          <td class="text-end text-nowrap">
+            {% if not task.is_completed %}
+            <form method="post" action="{% url 'task_complete' task.pk %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-success">Complete</button>
+            </form>
+            {% endif %}
+            <a href="{% url 'task_edit' task.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-4">No tasks found.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

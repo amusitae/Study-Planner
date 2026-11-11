@@ -1,0 +1,4 @@
+Django>=5.2,<5.3
+selenium>=4.20
+gunicorn>=22.0
+whitenoise>=6.6

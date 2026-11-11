@@ -1,0 +1,4 @@
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.stat-card { border-width: 0 0 0 4px; border-style: solid; }
+.stat-number { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+.task-row .task-description { max-width: 28rem; }

@@ -1,0 +1,29 @@
+name: Django Tests
+
+# Runs on every push and every pull request (CS50 Week 7: CI/CD)
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Django checks
+        run: python manage.py check
+
+      # ubuntu-latest already has Google Chrome, so the Selenium test runs here too.
+      - name: Run all tests (unit, Django, Selenium)
+        run: python manage.py test -v 2

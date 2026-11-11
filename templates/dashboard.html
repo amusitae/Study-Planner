@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Study Planner{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Dashboard</h1>
+  <a href="{% url 'task_add' %}" class="btn btn-primary">+ Add Task</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg"><div class="card stat-card border-primary h-100"><div class="card-body">
+    <div class="text-muted small">Total tasks</div><div class="stat-number" id="stat-total">{{ stats.total }}</div></div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card border-success h-100"><div class="card-body">
+    <div class="text-muted small">Completed</div><div class="stat-number text-success" id="stat-completed">{{ stats.completed }}</div></div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card border-warning h-100"><div class="card-body">
+    <div class="text-muted small">Pending</div><div class="stat-number text-warning" id="stat-pending">{{ stats.pending }}</div></div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card border-danger h-100"><div class="card-body">
+    <div class="text-muted small">Overdue</div><div class="stat-number text-danger" id="stat-overdue">{{ stats.overdue }}</div></div></div></div>
+</div>
+
+<div class="card shadow-sm"><div class="card-body">
+  <div class="d-flex justify-content-between mb-2">
+    <span class="fw-semibold">Completion</span>
+    <span id="stat-percentage">{{ stats.percentage }}%</span>
+  </div>
+  <div class="progress" style="height: 1.25rem;" role="progressbar" aria-valuenow="{{ stats.percentage }}" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar bg-success" style="width: {{ stats.percentage }}%"></div>
+  </div>
+</div></div>
+{% endblock %}
